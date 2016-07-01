@@ -1,8 +1,7 @@
 # == Class: jenkinshelper::cli_helper
 class jenkinshelper::cli_helper {
   Class['jenkinshelper'] ->
-    Class['jenkinshelper::cli_helper'] ->
-      Anchor['jenkinshelper::end']
+    Class['jenkinshelper::cli_helper']
   $helper_cmd = join(
     delete_undef_values([
       '/usr/bin/java',

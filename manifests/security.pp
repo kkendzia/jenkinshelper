@@ -13,8 +13,7 @@ define jenkinshelper::security::set_ldap(
   include ::jenkinshelper::cli_helper
 
   Class['jenkinshelper::cli_helper']->
-    jenkinshelper::security::set_ldap[$title]->
-      Anchor['jenkinshelper::end']
+    jenkinshelper::security::set_ldap[$title]
 
   if $ldap_url {
     if $ldap_url == 'disabled' {

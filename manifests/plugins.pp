@@ -11,8 +11,7 @@ define jenkinshelper::plugins::set_simpletheme(
   include ::jenkinshelper::cli_helper
 
   Class['jenkinshelper::cli_helper']->
-    jenkinshelper::plugins::set_simpletheme[$title]->
-      Anchor['jenkinshelper::end']
+    jenkinshelper::plugins::set_simpletheme[$title]
 
   $run = join(
     delete_undef_values(
