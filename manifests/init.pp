@@ -43,7 +43,7 @@ class jenkinshelper(
   $jar           = $::jenkinshelper::params::jar,
   $cli_tries     = $::jenkinshelper::params::cli_tries,
   $cli_try_sleep = $::jenkinshelper::params::cli_try_sleep,
-) inherit jenkinshelper::paramas {
+) inherits jenkinshelper::paramas {
   file { "${libdir}/swi.groovy":
     source => 'puppet:///modules/jenkinshelper/swi.groovy',
     owner  => $user,
