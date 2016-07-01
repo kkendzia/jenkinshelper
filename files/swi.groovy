@@ -47,7 +47,10 @@ class Actions {
         realm = new hudson.security.LDAPSecurityRealm(ldap_url,basedn,'','uid={0}','','','Qd2eysqDO4STwAyPCQHRVA==',false)
         permission_list.each {
           def (perm,role) = it.tokenize( ':' )
-          strategy.add(perm,role)
+          int idx = perm.lastIndexOf('.');
+          if(idx<0) return null;
+          Class cl = Class.forName(perm.substring(0,idx),true, Jenkins.getInstance().getPluginManager().uberClassLoader)
+          strategy.add(perm.substring(idx+1),role)
         }
       default:
         throw new InvalidAuthenticationStrategy()
