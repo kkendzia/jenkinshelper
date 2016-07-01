@@ -33,7 +33,7 @@ class Actions {
     }
     def realm
     def strategy
-    switch (security_model) {
+    switch (strategy_type) {
       case 'full_control':
         strategy = new hudson.security.FullControlOnceLoggedInAuthorizationStrategy()
         realm = new hudson.security.HudsonPrivateSecurityRealm(false, false, null)
