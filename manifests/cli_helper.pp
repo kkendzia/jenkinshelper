@@ -1,5 +1,6 @@
 # == Class: jenkinshelper::cli_helper
 class jenkinshelper::cli_helper {
+  include ::jenkinshelper
   Class['jenkinshelper'] ->
     Class['jenkinshelper::cli_helper']
   $helper_cmd = join(

@@ -23,11 +23,8 @@ define jenkinshelper::security::set_ldap(
     }
 
     if $strategy_type == 'matrix' {
-      if is_array(permission_list) {
-        $permission_list = join($permission_list,',')
-      }
       if is_string($permission_list) and $permission_list == 'default' {
-        $permissions = [
+        $tmp = [
           'com.cloudbees.plugins.credentials.CredentialsProvider.VIEW:ROLE_JENKINSADMIN',
           'hudson.model.Computer.BUILD:ROLE_JENKINSADMIN',
           'hudson.model.Computer.CONNECT:ROLE_JENKINSADMIN',
@@ -67,10 +64,15 @@ define jenkinshelper::security::set_ldap(
           'hudson.model.View.READ:anonymous',
         ]
       } else {
-        $permissions = undef
+        $tmp = undef
       }
     }
     else {
+      $tmp = undef
+    }
+    if is_array($tmp) {
+      $permissions = join($permissions,',')
+    } else {
       $permissions = undef
     }
     $run = join(
