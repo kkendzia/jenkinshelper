@@ -71,7 +71,7 @@ define jenkinshelper::security::set_ldap(
       $tmp = undef
     }
     if is_array($tmp) {
-      $permissions = join($permissions,',')
+      $permissions = join($tmp,' ')
     } else {
       $permissions = undef
     }
