@@ -1,0 +1,14 @@
+{
+  "name": "swi-jenkinshelper",
+  "version": "0.1.0",
+  "author": "Kevin Kendzia",
+  "summary": "Wraps own Groovy Script to add Jenkins Security Options and Plugin configurations",
+  "license": "Apache 2.0",
+  "source": "git@git-repo.server.technisat-digital:kevin.kendzia/jenkins-groovy.git",
+  "project_page": null,
+  "issues_url": "Nowhere",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ]
+}
+

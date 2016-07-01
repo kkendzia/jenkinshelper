@@ -22,9 +22,38 @@ class Actions {
       out.println("LDAP deaktiviert")
       return null
     }
-    def realm = new hudson.security.LDAPSecurityRealm('auth.mibstd2.technisat-digital','dc=mibstd2,dc=technisat-digital','','uid={0}','','','Qd2eysqDO4STwAyPCQHRVA==',false)
-    def strategy = new hudson.security.ProjectMatrixAuthorizationStrategy()
+  }
 
+  void set_ldap(String ldap_url, String basedn, String strategy_type, String[] permission_list) {
+    def j = Jenkins.getInstance()
+    if (ldap_url == 'disabled') {
+      j.disableSecurity()
+      out.println("LDAP deaktiviert")
+      return null
+    }
+    def realm
+    def strategy
+    switch (security_model) {
+      case 'full_control':
+        strategy = new hudson.security.FullControlOnceLoggedInAuthorizationStrategy()
+        realm = new hudson.security.HudsonPrivateSecurityRealm(false, false, null)
+        break
+      case 'unsecured':
+        strategy = new hudson.security.AuthorizationStrategy.Unsecured()
+        realm = new hudson.security.HudsonPrivateSecurityRealm(false, false, null)
+        break
+      case 'matrix':
+        strategy = new hudson.security.ProjectMatrixAuthorizationStrategy()
+        realm = new hudson.security.LDAPSecurityRealm(ldap_url,basedn,'','uid={0}','','','Qd2eysqDO4STwAyPCQHRVA==',false)
+        permission_list.each {
+          def (perm,role) = it.tokenize( ':' )
+          strategy.add(perm,role)
+        }
+      default:
+        throw new InvalidAuthenticationStrategy()
+    }
+
+/*
     strategy.add(com.cloudbees.plugins.credentials.CredentialsProvider.VIEW,'ROLE_JENKINSADMIN')
     strategy.add(Computer.BUILD,'ROLE_JENKINSADMIN')
     strategy.add(Computer.CONNECT,'ROLE_JENKINSADMIN')
@@ -63,16 +92,15 @@ class Actions {
     strategy.add(View.READ,'ROLE_JENKINSADMIN')
     strategy.add(View.READ,'ROLE_JENKINSUSER')
     strategy.add(View.READ,'anonymous')
-
+*/
     j.setSecurityRealm(realm)
     j.setAuthorizationStrategy(strategy)
     j.save()
-    out.println("Setze LDAP"+ldap_url)
   }
-  
-  void set_swi_style() {
+
+  void set_swi_style(String cssUrl, String jsUrl) {
     def jsonconfig = new net.sf.json.JsonConfig()
-    def json = net.sf.json.JSONSerializer.toJSON((Object)'{"cssUrl":"/userContent/style.css","jsUrl":"/userContent/style.js"}',jsonconfig)
+    def json = net.sf.json.JSONSerializer.toJSON((Object)'{"cssUrl":"'+cssUrl+'","jsUrl":"'+jsUrl+'"}',jsonconfig)
     def j = Jenkins.getInstance()
     def p = j.getDescriptor(SimpleThemeDecorator)
     def s = org.kohsuke.stapler.Stapler.getCurrent()
@@ -87,7 +115,4 @@ if (args.length < 2) {
   actions."$action"()
 } else {
   actions."$action"(*args[1..-1])
-  out.println(args)
 }
-
-
