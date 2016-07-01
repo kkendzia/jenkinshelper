@@ -24,7 +24,9 @@ define jenkinshelper::security::set_ldap(
     }
 
     if $strategy_type == 'matrix' {
-      $permission_list = join($permission_list,',')
+      if is_array(permission_list) {
+        $permission_list = join($permission_list,',')
+      }
     } else {
       $permission_list = undef
     }
