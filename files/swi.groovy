@@ -7,6 +7,7 @@ import org.kohsuke.stapler.*;
 import hudson.security.*
 import com.cloudbees.plugins.credentials.CredentialsProvider.*
 
+class InvalidAuthenticationStrategy extends Exception{}
 class Actions {
   Actions(out, bindings) {
     this.out = out
@@ -50,52 +51,12 @@ class Actions {
           int idx = perm.lastIndexOf('.');
           if(idx<0) return null;
           Class cl = Class.forName(perm.substring(0,idx),true, Jenkins.getInstance().getPluginManager().uberClassLoader)
-          strategy.add(perm.substring(idx+1),role)
+          strategy.add(cl.getAt(perm.substring(idx+1)),role) //@TODO!!!!!!!! Variable noch
         }
       default:
         throw new InvalidAuthenticationStrategy()
     }
 
-/*
-    strategy.add(com.cloudbees.plugins.credentials.CredentialsProvider.VIEW,'ROLE_JENKINSADMIN')
-    strategy.add(Computer.BUILD,'ROLE_JENKINSADMIN')
-    strategy.add(Computer.CONNECT,'ROLE_JENKINSADMIN')
-    strategy.add(Computer.CREATE,'ROLE_JENKINSADMIN')
-    strategy.add(Computer.DELETE,'ROLE_JENKINSADMIN')
-    strategy.add(Computer.DISCONNECT,'ROLE_JENKINSADMIN')
-
-    strategy.add(Jenkins.ADMINISTER,'ROLE_JENKINSADMIN')
-    strategy.add(PluginManager.CONFIGURE_UPDATECENTER,'ROLE_JENKINSADMIN')
-    strategy.add(Jenkins.READ,'ROLE_JENKINSADMIN')
-    strategy.add(Jenkins.READ,'ROLE_JENKINSUSER')
-    strategy.add(Jenkins.READ,'anonymous')
-    strategy.add(Jenkins.RUN_SCRIPTS,'ROLE_JENKINSADMIN')
-    strategy.add(PluginManager.UPLOAD_PLUGINS,'ROLE_JENKINSADMIN')
-    strategy.add(Item.BUILD,'ROLE_JENKINSADMIN')
-    strategy.add(Item.CANCEL,'ROLE_JENKINSADMIN')
-    strategy.add(Item.CONFIGURE,'ROLE_JENKINSADMIN')
-    strategy.add(Item.CREATE,'ROLE_JENKINSADMIN')
-    strategy.add(Item.DELETE,'ROLE_JENKINSADMIN')
-    strategy.add(Item.DISCOVER,'ROLE_JENKINSADMIN')
-    strategy.add(Item.DISCOVER,'ROLE_JENKINSUSER')
-    strategy.add(Item.EXTENDED_READ,'ROLE_JENKINSADMIN')
-    strategy.add(Item.EXTENDED_READ,'ROLE_JENKINSUSER')
-    strategy.add(Item.READ,'ROLE_JENKINSADMIN')
-    strategy.add(Item.READ,'ROLE_JENKINSUSER')
-    strategy.add(Item.READ,'anonymous')
-    strategy.add(Item.WORKSPACE,'ROLE_JENKINSADMIN')
-    strategy.add(Item.WORKSPACE,'ROLE_JENKINSUSER')
-    strategy.add(Item.WORKSPACE,'anonymous')
-    strategy.add(Run.DELETE,'ROLE_JENKINSADMIN')
-    strategy.add(Run.UPDATE,'ROLE_JENKINSADMIN')
-    strategy.add(Run.UPDATE,'ROLE_JENKINSUSER')
-    strategy.add(View.CONFIGURE,'ROLE_JENKINSADMIN')
-    strategy.add(View.CREATE,'ROLE_JENKINSADMIN')
-    strategy.add(View.DELETE,'ROLE_JENKINSADMIN')
-    strategy.add(View.READ,'ROLE_JENKINSADMIN')
-    strategy.add(View.READ,'ROLE_JENKINSUSER')
-    strategy.add(View.READ,'anonymous')
-*/
     j.setSecurityRealm(realm)
     j.setAuthorizationStrategy(strategy)
     j.save()
