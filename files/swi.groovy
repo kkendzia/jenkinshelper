@@ -8,6 +8,7 @@ import hudson.security.*
 import com.cloudbees.plugins.credentials.CredentialsProvider.*
 
 class InvalidAuthenticationStrategy extends Exception{}
+
 class Actions {
   Actions(out, bindings) {
     this.out = out
@@ -51,8 +52,9 @@ class Actions {
           int idx = perm.lastIndexOf('.');
           if(idx<0) return null;
           Class cl = Class.forName(perm.substring(0,idx),true, Jenkins.getInstance().getPluginManager().uberClassLoader)
-          strategy.add(cl.getAt(perm.substring(idx+1)),role) //@TODO!!!!!!!! Variable noch
+          strategy.add(cl.getAt(perm.substring(idx+1)),role)
         }
+        break
       default:
         throw new InvalidAuthenticationStrategy()
     }
